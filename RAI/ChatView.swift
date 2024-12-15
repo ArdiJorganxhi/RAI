@@ -10,7 +10,6 @@ struct ChatView: View {
     
     var body: some View {
         VStack {
-            // Chat messages list
             ScrollView {
                 VStack(spacing: 8) {
                     ForEach(chatBotViewModel.chats) { message in
@@ -37,6 +36,16 @@ struct ChatView: View {
                     }
                 }
             }
+            
+            HStack {
+                Text("ChatBot is typing...")
+                    .font(.footnote)
+                    .foregroundColor(.gray)
+                    .padding(.leading, 16)
+                    .opacity(chatBotViewModel.isBotTyping ? 1 : 0)
+                Spacer()
+            }
+            .padding(.bottom, 8)
             
             // Input field
             HStack {

@@ -16,4 +16,18 @@ extension String {
         }
         return false
     }
+    
+    func extractFinancialAdviceCategory() -> FinancialAdviceCategory {
+        let category =  categoriesOfFinancialAdvices.filter {self.lowercased().contains($0.lowercased())}[0]
+        switch category {
+        case "crypto":
+            return .crypto
+        case "exchanges":
+            return .exchange
+        case "immovability":
+            return .immovability
+        default:
+            return .unknown
+        }
+    }
 }
