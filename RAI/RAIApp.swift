@@ -11,7 +11,7 @@ import SwiftUI
 struct RAIApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ChatView()
         }
     }
 }
