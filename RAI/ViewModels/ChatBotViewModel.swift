@@ -9,35 +9,43 @@ import Foundation
 
 @MainActor
 final class ChatBotViewModel: ObservableObject {
-    @Published var chats: [ChatMessage] = [
-        ChatMessage(text: welcomeUser, isUser: false)
-    ]
+    private var currentLanguage: Language = .albanian
+    @Published var chats: [ChatMessage]
     @Published var isBotTyping: Bool = false
     
     private let chatBotService: ChatBotServiceable
     
     init(chatBotService: ChatBotServiceable = ChatBotService()) {
         self.chatBotService = chatBotService
+        self.chats = [
+            ChatMessage(text: ChatBotPrompt.welcomeUser(language: self.currentLanguage.rawValue).prompt, isUser: false)
+        ]
     }
     
     func chat(in message: String) {
+        self.currentLanguage = detectLanguage(for: message)!
         self.chats.append(ChatMessage(text: message, isUser: true))
         switch message {
         case let str where str.contains(anyOf: technicalIssues):
             trackIssue(message: str)
         case let str where str.contains(anyOf: financialAdvices) || str.contains(anyOf: categoriesOfFinancialAdvices):
-            if(str.contains(anyOf: categoriesOfFinancialAdvices)) {
-                let category = str.extractFinancialAdviceCategory()
+            if(str.lowercased().contains(anyOf: financialAdvices) && str.lowercased().contains(anyOf: categoriesOfFinancialAdvices)) {
+                giveFinancialAdvice(message: str)
+            }
+            else if(str.contains(anyOf: categoriesOfFinancialAdvices)) {
+                let userMessage = self.chats.index(before: self.chats.endIndex - 2)
+                let category = str.extractFinancialAdviceCategory(userMessage: self.chats[userMessage].text)
+                print("This is prompt for financial advice: " + category.prompt)
                 giveFinancialAdvice(message: category.prompt)
             } else {
                 self.isBotTyping = true
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     self.isBotTyping = false
-                    self.chats.append(ChatMessage(text: askUserAboutFinancialCategories, isUser: false))
+                    self.chats.append(ChatMessage(text: ChatBotPrompt.askUserAboutFinancialCategories(language: self.currentLanguage.rawValue).prompt, isUser: false))
                 }
             }
         case let str where str.contains(anyOf: keywordsForThanking):
-            self.chats.append(ChatMessage(text: thankyouUser, isUser: false))
+            self.chats.append(ChatMessage(text: ChatBotPrompt.thankyouUser(language: self.currentLanguage.rawValue).prompt, isUser: false))
             
         default:
             self.isBotTyping = true

@@ -12,6 +12,7 @@ struct RAIApp: App {
     var body: some Scene {
         WindowGroup {
             ChatView()
+                .environment(\.locale, .init(identifier: "sq-XK"))
         }
     }
 }

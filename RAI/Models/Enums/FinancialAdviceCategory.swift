@@ -9,21 +9,21 @@ import Foundation
 
 
 enum FinancialAdviceCategory {
-    case exchange
-    case crypto
-    case immovability
+    case exchange(message: String)
+    case stocks(message: String)
+    case bonds(message: String)
     case unknown
 }
 
 extension FinancialAdviceCategory {
     var prompt: String {
         switch self {
-        case .exchange:
-            return "As a user I want to take financial advices regarding exchanges, can you help me with elaborating more with assistant?"
-        case .crypto:
-            return "As a user I want to take financial advices regarding cryptocurrencies, can you help me with elaborating more with assistant?"
-        case .immovability:
-            return "As a user I want to take financial advices regarding immovability, can you help me with elaborating more with assistant?"
+        case .exchange(let message):
+            return message + " on exchange, please elaborate more with assistant"
+        case .stocks(let message):
+            return message + " on stocks, please elaborate more with assistant"
+        case .bonds(let message):
+            return message + " on bonds, please elaborate more with assistant"
         case .unknown:
             return ""
         }

@@ -17,15 +17,16 @@ extension String {
         return false
     }
     
-    func extractFinancialAdviceCategory() -> FinancialAdviceCategory {
+    func extractFinancialAdviceCategory(userMessage: String) -> FinancialAdviceCategory {
         let category =  categoriesOfFinancialAdvices.filter {self.lowercased().contains($0.lowercased())}[0]
-        switch category {
-        case "crypto":
-            return .crypto
+        print("Found category:" + category)
+        switch category.lowercased() {
+        case "bonds":
+            return .bonds(message: userMessage)
         case "exchanges":
-            return .exchange
-        case "immovability":
-            return .immovability
+            return .exchange(message: userMessage)
+        case "stocks":
+            return .stocks(message: userMessage)
         default:
             return .unknown
         }
