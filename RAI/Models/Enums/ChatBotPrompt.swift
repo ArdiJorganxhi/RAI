@@ -29,7 +29,7 @@ extension ChatBotPrompt {
             if(language == Language.english.rawValue) {
                 return "Hi, thanks for asking about financial advice. Can you specify which category do you want me to help you with? \n 1. Exchanges \n 2. Stocks \n 3. Bonds"
             } else {
-                return "Pershendetje, faleminderit qe na keni pyetur per sygjerim financiar. A mund te kallxoni me hollesisht per cilen kategori jeni te interesuar? \n 1. Exchanges \n 2. Stocks \n 3. Bonds"
+                return "Pershendetje, faleminderit qe na keni pyetur per sygjerim financiar. A mund te kallxoni me hollesisht per cilen kategori jeni te interesuar? \n 1. Shkembime \n 2. Stoqe \n 3. Obligacione"
             }
         case .thankyouUser(language: let language):
             if(language == Language.english.rawValue) {

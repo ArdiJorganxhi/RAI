@@ -22,11 +22,17 @@ extension String {
         print("Found category:" + category)
         switch category.lowercased() {
         case "bonds":
-            return .bonds(message: userMessage)
+            return .bonds(message: userMessage, language: Language.english.rawValue)
         case "exchanges":
-            return .exchange(message: userMessage)
+            return .exchange(message: userMessage, language: Language.english.rawValue)
         case "stocks":
-            return .stocks(message: userMessage)
+            return .stocks(message: userMessage, language: Language.english.rawValue)
+        case let str where ["stoqe", "stoqet"].contains(str):
+            return .stocks(message: userMessage, language: Language.albanian.rawValue)
+        case let str where ["shkembime", "shkembimet"].contains(str):
+            return .exchange(message: userMessage, language: Language.albanian.rawValue)
+        case let str where ["bonde", "bondet"].contains(str):
+            return .bonds(message: userMessage, language: Language.albanian.rawValue)
         default:
             return .unknown
         }

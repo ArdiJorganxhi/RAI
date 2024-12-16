@@ -12,6 +12,7 @@ final class ChatBotViewModel: ObservableObject {
     private var currentLanguage: Language = .albanian
     @Published var chats: [ChatMessage]
     @Published var isBotTyping: Bool = false
+    @Published var currentTypingLanguage: Language = .albanian
     
     private let chatBotService: ChatBotServiceable
     
@@ -22,8 +23,17 @@ final class ChatBotViewModel: ObservableObject {
         ]
     }
     
+    func getTextForTyping() -> String {
+        if self.currentTypingLanguage == .english {
+            return "RAI is typing..."
+        } else {
+            return "RAI eshte duke shkruar..."
+        }
+    }
+    
     func chat(in message: String) {
         self.currentLanguage = detectLanguage(for: message)!
+        self.currentTypingLanguage = self.currentLanguage
         self.chats.append(ChatMessage(text: message, isUser: true))
         switch message {
         case let str where str.contains(anyOf: technicalIssues):
@@ -45,13 +55,17 @@ final class ChatBotViewModel: ObservableObject {
                 }
             }
         case let str where str.contains(anyOf: keywordsForThanking):
-            self.chats.append(ChatMessage(text: ChatBotPrompt.thankyouUser(language: self.currentLanguage.rawValue).prompt, isUser: false))
-            
+            self.isBotTyping = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.isBotTyping = false
+                self.chats.append(ChatMessage(text: ChatBotPrompt.thankyouUser(language: self.currentLanguage.rawValue).prompt, isUser: false))
+        }
+
         default:
             self.isBotTyping = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self.isBotTyping = false
-                self.chats.append(ChatMessage(text: didntUnderstandUser, isUser: false))
+                self.chats.append(ChatMessage(text: ChatBotPrompt.didntUnderstandUser(language: self.currentLanguage.rawValue).prompt, isUser: false))
             }
             
         }
@@ -80,6 +94,7 @@ final class ChatBotViewModel: ObservableObject {
     private func giveFinancialAdvice(message: String) {
         self.isBotTyping = true
         let financialRequest = FinancialAdviceRequest(search: message)
+        print("This is financial advice question:" + financialRequest.search)
         Task(priority: .background) {
             let response = await chatBotService.giveFinancialAdvice(request: financialRequest)
             print(response)

@@ -3,13 +3,23 @@ import SwiftUI
 
 struct ChatView: View {
     @StateObject private var chatBotViewModel = ChatBotViewModel()
-    @State private var messages: [ChatMessage] = [
-        ChatMessage(text: "Pershendetje zoteri Ardi, si mund te ju ndihmojme?", isUser: false)
-    ]
     @State private var currentMessage: String = ""
     
     var body: some View {
-        VStack {
+        VStack(spacing: 25) {
+            HStack {
+                
+                Spacer()
+                
+                Text("RAI")
+                    .fontWeight(.bold)
+                    .font(.system(size: 25))
+                    .foregroundColor(.white)
+                
+                Spacer()
+                }
+            .padding()
+            .background(Color.yellow)
             ScrollView {
                 VStack(spacing: 8) {
                     ForEach(chatBotViewModel.chats) { message in
@@ -38,7 +48,7 @@ struct ChatView: View {
             }
             
             HStack {
-                Text("ChatBot is typing...")
+                Text(chatBotViewModel.getTextForTyping())
                     .font(.footnote)
                     .foregroundColor(.gray)
                     .padding(.leading, 16)
@@ -52,6 +62,8 @@ struct ChatView: View {
                 TextField("Type a message", text: $currentMessage)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(5)
+                    .autocorrectionDisabled()
+                    .autocapitalization(.none)
                     .background(Color.white)
                     .cornerRadius(8)
                 
@@ -68,31 +80,10 @@ struct ChatView: View {
         }
         .background(Color.black.opacity(0.85).edgesIgnoringSafeArea(.all))
     }
-    
-    private func sendMessage() {
-        guard !currentMessage.isEmpty else { return }
-        chatBotViewModel.chats.append(ChatMessage(text: currentMessage, isUser: true))
-        Task {
-            chatBotViewModel.chat(in: currentMessage)
-        }
-        simulateBotResponse()
-        currentMessage = ""
-    }
-    
-    private func simulateBotResponse() {
-        let botResponses = [
-            "Per momentin kemi probleme teknike me ATM ne degen e Prizrenit, ju kerkojme falje per kete incident."
-        ]
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            let response = botResponses.randomElement() ?? "Nuk jam i sigurt nese e kam kuptuar pyetjen tuaj."
-            chatBotViewModel.chats.append(ChatMessage(text: response, isUser: false))
-        }
-    }
 }
 
 struct ChatView_Previews: PreviewProvider {
     static var previews: some View {
         ChatView()
-            .environment(\.locale, .init(identifier: "tr"))
     }
 }
