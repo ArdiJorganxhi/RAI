@@ -10,3 +10,6 @@ It is developed using SwiftUI, MVVM Architectural Design Pattern and Network Lay
 # IMPORTANT NOTE
 In order to be able ask questions, you need to clone also financial-advice-service and tracking-issue-service to get answers from bot.
 
+tracking-issue-service: https://github.com/RTKO-RAI/tracking-issue-service
+
+
